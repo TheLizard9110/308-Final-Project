@@ -13,4 +13,4 @@ build: clean $(OBJ)
 
 -PHONY: clean
 clean:
-    rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET)
