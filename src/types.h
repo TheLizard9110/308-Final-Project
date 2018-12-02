@@ -7,12 +7,18 @@
 
 #ifndef types_h
 #define types_h
+#include <curses.h>
+#include <string.h>
+#include <stdlib.h>
 
-typedef enum { FALSE, TRUE } bool;
+#define MAX_WIDTH 15
+#define MAX_HEIGHT 15
+#define FALSE 0
+#define TRUE 1
 
-struct Cell{
+typedef struct Cell{
     
-};
+} Cell;
 
 typedef struct EmptyCell{
     Cell base;
@@ -23,4 +29,11 @@ typedef struct MineCell{
    Cell base;
 } MineCell;
 
+
+typedef struct Board
+{
+	int width;
+	int height;
+	int board[MAX_WIDTH][MAX_HEIGHT];
+} Board;
 #endif /* types_h */
