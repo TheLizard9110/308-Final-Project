@@ -8,6 +8,7 @@
 #ifndef types_h
 #define types_h
 #include <curses.h>
+#include <panel.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -36,4 +37,7 @@ typedef struct Board
 	int height;
 	int board[MAX_WIDTH][MAX_HEIGHT];
 } Board;
+
+//function sigs
+void print_board(int r, int c);
 #endif /* types_h */
