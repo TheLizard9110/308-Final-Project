@@ -85,23 +85,24 @@ void print_board(int r, int c) {
 	int i;
         int j;
         int x = 0;
-        int y = 0;
+        int y = 2;
 	int rows = r;
 	int cols = c;
         initscr();
         noecho();
         curs_set(FALSE);
+	printw("Minesweeper");
         for(i = 1; i <= rows; i++){
                 for(j = 1; j <= cols; j++) {
                         mvprintw(y, x, "X");
                         refresh();
                         y += 2;
                 }
-		y = 0;
+		y = 2;
                 x += 2;
         }
 
-	//printw("%s, %s", rows, cols);
+
 	refresh();
 	getch();
 	endwin();
