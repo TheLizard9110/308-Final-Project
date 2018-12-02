@@ -39,5 +39,8 @@ typedef struct Board
 } Board;
 
 //function sigs
-void print_board(int r, int c);
+void print_board(int r, int c, int m);
+Board generate_mines(Board b, int m);
+
+
 #endif /* types_h */

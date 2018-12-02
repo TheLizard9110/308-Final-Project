@@ -17,6 +17,7 @@
 int main(int argc, const char * argv[]) {
 	int rows;
 	int cols;
+	int bombs;
 	if(argc > 1) return 0;
 	char size[1];
 	int boardSize = 0;
@@ -32,6 +33,7 @@ int main(int argc, const char * argv[]) {
 			printf("%s\n", "Making Small board...");
 			legalSize = 1;
 			boardSize = 5;
+			mines = 4;
 		}
 
 		//check for medium
@@ -39,6 +41,7 @@ int main(int argc, const char * argv[]) {
                 	printf("%s\n", "Making Medium board...");
                 	legalSize = 1;
 			boardSize = 10;
+			mines = 13;
         	}
 
 		//check for large
@@ -46,7 +49,13 @@ int main(int argc, const char * argv[]) {
                 	printf("%s\n", "Making Large board...");
                 	legalSize = 1;
 			boardSize = 15;
+			mines = 20;
         	}
+		
+		//check respects
+		else if(legalSize == 0 && (0 == strcmp(size,"f") || 0 == strcmp(size, "F"))){
+			printf("%s\n", "respects paid, thank you for your service");
+		}
 
 		//else
 		else{
@@ -58,22 +67,10 @@ int main(int argc, const char * argv[]) {
 	cols = boardSize;
 
 
-	//initscr();
-	
-	//printw("%s", size);
-	//refresh();
-
-	//getch();
-
-	//endwin();
-
-	
-	//create and display board of proper size
-
 	//bWin = newwin(rows + 2, 3 * cols + 2, 3, 8);
 	//wborder(bWin, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_ULCORNER, ACS_URCORNER, ACS_LLCORNER, ACS_LRCORNER);
 
-	print_board(rows, cols);
+	print_board(rows, cols, bombs);
 	//printf("%s\n","im just looking for a better way to get up out of bed instead of getting on the internet and checking out who hit me up fam");
 
 	
@@ -81,13 +78,17 @@ int main(int argc, const char * argv[]) {
 }
 
 
-void print_board(int r, int c) {
+void print_board(int r, int c, int m) {
 	int i;
         int j;
         int x = 0;
         int y = 2;
+	int mines = m;
 	int rows = r;
 	int cols = c;
+	Board newBoard;
+	newBoard->width = cols;
+	newBoard->height = rows;
         initscr();
         noecho();
         curs_set(FALSE);
@@ -106,6 +107,16 @@ void print_board(int r, int c) {
 	refresh();
 	getch();
 	endwin();
+}
+
+Board generate_mines(Board b, int m){
+	int a;
+	int b;
+	int mines = m;
+	int i;
+	for(i = 1; i <= mines; i++){
+		
+	}
 }
 
 
