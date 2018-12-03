@@ -31,7 +31,7 @@ typedef struct MineCell{
 } MineCell;
 
 
-typedef struct Board
+typedef struct
 {
 	int width;
 	int height;
@@ -39,8 +39,8 @@ typedef struct Board
 } Board;
 
 //function sigs
-void print_board(int r, int c, int m);
-Board generate_mines(Board b, int m);
-
+void print_board();
+Board generate_mines();
+int rand_n(int n);
 
 #endif /* types_h */

@@ -13,11 +13,13 @@
 #include <ncurses.h>
 #include <panel.h>
 
+int cols;
+int rows;
+int mines;
+
 //#ifndef TEST
 int main(int argc, const char * argv[]) {
-	int rows;
-	int cols;
-	int bombs;
+	
 	if(argc > 1) return 0;
 	char size[1];
 	int boardSize = 0;
@@ -41,7 +43,7 @@ int main(int argc, const char * argv[]) {
                 	printf("%s\n", "Making Medium board...");
                 	legalSize = 1;
 			boardSize = 10;
-			mines = 13;
+			mines = 15;
         	}
 
 		//check for large
@@ -49,7 +51,7 @@ int main(int argc, const char * argv[]) {
                 	printf("%s\n", "Making Large board...");
                 	legalSize = 1;
 			boardSize = 15;
-			mines = 20;
+			mines = 25;
         	}
 		
 		//check respects
@@ -69,8 +71,9 @@ int main(int argc, const char * argv[]) {
 
 	//bWin = newwin(rows + 2, 3 * cols + 2, 3, 8);
 	//wborder(bWin, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_ULCORNER, ACS_URCORNER, ACS_LLCORNER, ACS_LRCORNER);
-
-	print_board(rows, cols, bombs);
+		
+	Board info = generate_mines();
+	printf("%d", info.board[3][3]);
 	//printf("%s\n","im just looking for a better way to get up out of bed instead of getting on the internet and checking out who hit me up fam");
 
 	
@@ -78,17 +81,14 @@ int main(int argc, const char * argv[]) {
 }
 
 
-void print_board(int r, int c, int m) {
+void print_board() {
 	int i;
         int j;
         int x = 0;
         int y = 2;
-	int mines = m;
-	int rows = r;
-	int cols = c;
-	Board newBoard;
-	newBoard->width = cols;
-	newBoard->height = rows;
+	Board minesBoard;
+	minesBoard.width = cols;
+	minesBoard.height = rows;
         initscr();
         noecho();
         curs_set(FALSE);
@@ -109,14 +109,78 @@ void print_board(int r, int c, int m) {
 	endwin();
 }
 
-Board generate_mines(Board b, int m){
-	int a;
-	int b;
-	int mines = m;
-	int i;
-	for(i = 1; i <= mines; i++){
-		
+Board generate_mines(){
+	//initialize board with all 0's
+	int i, j;
+	int gb[rows][cols];
+	for(i = 0; i < rows; i++){
+		for(j = 0; j < cols; j++){
+			gb[i][j] = 0;
+		}
 	}
+	//printf("%d\n", gb[0][0]);
+	//printf("%d\n", gb[4][4]);
+	//insert mines randomly
+	int a, b, c, d, x, y;
+	
+	for(i = 1; i <= mines; i++){
+		a = rand_n(rows);
+		b = rand_n(cols);
+		//a, b = 1;
+		if(gb[a][b] == 9) i--;
+		else gb[a][b] = 9;
+	}
+
+
+	//count neighboring bombs
+
+	for(a = 1; a <= rows; a++)
+		for(b = 1; b <= cols; b++)
+			if(gb[a][b] != 9){
+				for(c = a - 1; c <= a + 1; c++)
+					for(d = b - 1; d <= b + 1; d++)
+						if(gb[c][d] == 9)
+							gb[a][b]++;
+			}
+	
+	
+	//test population of the board
+	/*
+	x=0;
+	y=2;
+	const char* p;
+	char buf[16];
+
+	initscr();
+	for(i = 1; i <= rows; i++){
+		for(j = 1; j <= cols; j++){
+			sprintf(buf, "%d", gb[i-1][j-1]);
+			p = buf;
+			mvprintw(y, x, p);
+			refresh();
+			y += 2;
+		}
+		y = 2;
+		x += 2;
+	}
+	getch();
+	endwin();
+	*/
+	
+	Board info;
+	info.width = cols;
+	info.height = rows;
+	
+	for(i = 0; i < rows; i++)
+		for(j = 0; j < cols; j++)
+			info.board[i][j] = gb[i][j];
+
+	return info;
+
 }
 
+int rand_n(int n) {
+	return rand() % n + 1;
+}
 
+			   
