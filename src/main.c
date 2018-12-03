@@ -89,6 +89,7 @@ int main(int argc, const char * argv[]) {
         int input;
 	const char * p;
         char buf[16];
+	int infoTemp = 9;
         while(1){
                 input = getch();
                 switch(input){
@@ -105,9 +106,12 @@ int main(int argc, const char * argv[]) {
                                 if (highlightY < cols) highlightY++;
                                 break;
 			case ' ':
-				sprintf(buf, "%d", info.board[highlightY-1][highlightX-1]);
-				p = buf;
-				*covered.cboard[highlightY-1][highlightX-1] = *p;
+				//sprintf(buf, "%d", info.board[highlightY-1][highlightX-1]);
+				infoTemp = info.board[highlightY-1][highlightX-1];
+				sprintf(buf, "%d", infoTemp);				
+				//p = buf;
+				//printf("%d", infoTemp);
+				covered.cboard[highlightY-1][highlightX-1] = buf;
 				break;
 			case 'm':
 			case 'M':

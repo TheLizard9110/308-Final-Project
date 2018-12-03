@@ -11,6 +11,7 @@
 #include <panel.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define MAX_WIDTH 15
 #define MAX_HEIGHT 15
