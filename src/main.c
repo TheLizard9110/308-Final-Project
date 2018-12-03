@@ -87,7 +87,7 @@ int main(int argc, const char * argv[]) {
         print_board(covered);
         //printf("%s\n","im just looking for a better way to get up out of bed instead of getting on th$
         int input;
-	const char* p;
+	const char * p;
         char buf[16];
         while(1){
                 input = getch();
@@ -105,10 +105,18 @@ int main(int argc, const char * argv[]) {
                                 if (highlightY < cols) highlightY++;
                                 break;
 			case ' ':
-				sprintf(buf, "%d", info.board[highlightX][highlightY]);
+				sprintf(buf, "%d", info.board[highlightY-1][highlightX-1]);
 				p = buf;
-				//char yeety[1] = &info.board[highlightX-1][highlightY-1];
-				*covered.cboard[highlightX][highlightY] = *p;
+				*covered.cboard[highlightY-1][highlightX-1] = *p;
+				break;
+			case 'm':
+			case 'M':
+				if (covered.cboard[highlightY-1][highlightX-1] == "X"){
+					covered.cboard[highlightY-1][highlightX-1] = "M";
+				}
+				else if (covered.cboard[highlightY-1][highlightX-1] == "M"){
+					covered.cboard[highlightY-1][highlightX-1] = "X";
+				}
 				break;
                         default:
                                 break;
@@ -200,16 +208,22 @@ Board generate_mines(){
 
 	//count neighboring bombs
 
-	for(a = 1; a <= rows; a++)
-		for(b = 1; b <= cols; b++)
+	Board info;
+	info.width = cols;
+	info.height = rows;
+
+	for(a = 0; a < rows; a++)
+		for(b = 0; b < cols; b++)
 			if(gb[a][b] != 9){
 				for(c = a - 1; c <= a + 1; c++)
 					for(d = b - 1; d <= b + 1; d++)
-						if(gb[c][d] == 9)
-							gb[a][b]++;
+						if (c < rows && d < cols && c >= 0 && d >= 0){
+							if(gb[c][d] == 9)
+								gb[a][b]++;
+						}
 			}
-	
-	
+
+
 	//test population of the board
 	/*
 	x=0;
@@ -232,11 +246,9 @@ Board generate_mines(){
 	getch();
 	endwin();
 	*/
-	
-	Board info;
-	info.width = cols;
-	info.height = rows;
-	
+
+
+
 	for(i = 0; i < rows; i++)
 		for(j = 0; j < cols; j++)
 			info.board[i][j] = gb[i][j];
@@ -249,4 +261,3 @@ int rand_n(int n) {
 	return rand() % n + 1;
 }
 
-			   
