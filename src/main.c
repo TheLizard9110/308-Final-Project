@@ -117,10 +117,9 @@ int main(int argc, const char * argv[]) {
 					winCount++;
 				infoTemp = info.board[highlightY-1][highlightX-1];
 				if(infoTemp == 9){
-					//TODO loss condition
 					covered.cboard[highlightY-1][highlightX-1] = "*"; //bomb
-					winCount = (rows * cols - mines);
-					loseBool = 1; 
+					winCount = (rows * cols - mines); // triggers board clear
+					loseBool = 1; //triggers loss message
 				}
 				else if(infoTemp == 0){
 					//TODO method or function to clear out open areas	
