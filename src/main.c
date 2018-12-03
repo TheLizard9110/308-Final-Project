@@ -87,9 +87,8 @@ int main(int argc, const char * argv[]) {
         print_board(covered);
         //printf("%s\n","im just looking for a better way to get up out of bed instead of getting on th$
         int input;
-	const char * p;
         char buf[16];
-	int infoTemp = 9;
+	int infoTemp;
         while(1){
                 input = getch();
                 switch(input){
@@ -106,12 +105,24 @@ int main(int argc, const char * argv[]) {
                                 if (highlightY < cols) highlightY++;
                                 break;
 			case ' ':
-				//sprintf(buf, "%d", info.board[highlightY-1][highlightX-1]);
 				infoTemp = info.board[highlightY-1][highlightX-1];
-				sprintf(buf, "%d", infoTemp);				
-				//p = buf;
-				//printf("%d", infoTemp);
-				covered.cboard[highlightY-1][highlightX-1] = buf;
+				if(infoTemp == 9){//if bomb
+					covered.cboard[highlightY-1][highlightX-1] = "*";
+				}
+				else if(infoTemp == 0) covered.cboard[highlightY-1][highlightX-1] = "0";
+				else if(infoTemp == 1) covered.cboard[highlightY-1][highlightX-1] = "1";
+				else if(infoTemp == 2) covered.cboard[highlightY-1][highlightX-1] = "2";
+				else if(infoTemp == 3) covered.cboard[highlightY-1][highlightX-1] = "3";
+				else if(infoTemp == 4) covered.cboard[highlightY-1][highlightX-1] = "4";
+				else if(infoTemp == 5) covered.cboard[highlightY-1][highlightX-1] = "5";
+				else if(infoTemp == 6) covered.cboard[highlightY-1][highlightX-1] = "6";
+				else if(infoTemp == 7) covered.cboard[highlightY-1][highlightX-1] = "7";
+				else if(infoTemp == 8) covered.cboard[highlightY-1][highlightX-1] = "8";
+				else{
+					covered.cboard[highlightY-1][highlightX-1] = "?";
+					//sprintf(buf, "%d", infoTemp);				
+					//covered.cboard[highlightY-1][highlightX-1] = buf;
+				}
 				break;
 			case 'm':
 			case 'M':
