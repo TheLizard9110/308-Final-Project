@@ -66,19 +66,29 @@ int main(int argc, const char * argv[]) {
 			printf("%s\n", "That isn't a size, maybe try a differnet one.");
 		}
 	}//end while
-
 	rows = boardSize;
 	cols = boardSize;
 	Board info = generate_mines();
-        printf("%d", info.board[3][3]);
+	Board covered;
+	covered.width = cols;
+	covered.height = rows;
+	int i, j;
+        for(i = 0; i < rows; i++){
+                for(j = 0; j < cols; j++){
+                        covered.cboard[i][j] = "X";
+                }
+        }
+
 	initscr();
         noecho();
         curs_set(FALSE);
         cbreak();
         printw("Minesweeper");
-        print_board();
+        print_board(covered);
         //printf("%s\n","im just looking for a better way to get up out of bed instead of getting on th$
         int input;
+	const char* p;
+        char buf[16];
         while(1){
                 input = getch();
                 switch(input){
@@ -94,10 +104,16 @@ int main(int argc, const char * argv[]) {
                         case 'd':
                                 if (highlightY < cols) highlightY++;
                                 break;
+			case ' ':
+				sprintf(buf, "%d", info.board[highlightX][highlightY]);
+				p = buf;
+				//char yeety[1] = &info.board[highlightX-1][highlightY-1];
+				*covered.cboard[highlightX][highlightY] = *p;
+				break;
                         default:
                                 break;
                 }
-                print_board();
+                print_board(covered);
                 if (input == 'X' || input == 'x') break;
         }
 
@@ -109,15 +125,13 @@ int main(int argc, const char * argv[]) {
 }
 
 
-void print_board() {
+void print_board(Board board) {
 	int i;
         int j;
         int x = 0;
         int y = 2;
-	Board minesBoard;
-	minesBoard.width = cols;
-	minesBoard.height = rows;
-        for(i = 1; i <= rows; i++){
+        /*
+	for(i = 1; i <= rows; i++){
                 for(j = 1; j <= cols; j++) {
                         if (highlightX == j && highlightY == i){
 				attron(A_REVERSE);
@@ -127,12 +141,35 @@ void print_board() {
 			else{
 				mvprintw(y, x, "X");
                         }
-			//refresh();
                         y += 2;
                 }
 		y = 2;
                 x += 2;
+		}*/
+        //const char* p;
+        //char buf[16];
+
+        for(i = 1; i <= rows; i++){
+                for(j = 1; j <= cols; j++){
+                        //sprintf(buf, "%d", board.cboard[i-1][j-1]);
+                        //p = buf;
+			const char * q = board.cboard[i-1][j-1];
+                        if (highlightX == j && highlightY == i){
+				attron(A_REVERSE);
+				mvprintw(y, x, q);
+				attroff(A_REVERSE);
+			}
+			else{
+				mvprintw(y, x, q);
+			}
+                        refresh();
+                        y += 2;
+                }
+                y = 2;
+                x += 2;
         }
+
+
 
 
 	refresh();

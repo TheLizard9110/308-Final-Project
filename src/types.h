@@ -36,10 +36,11 @@ typedef struct
 	int width;
 	int height;
 	int board[MAX_WIDTH][MAX_HEIGHT];
+	char * cboard[MAX_WIDTH][MAX_HEIGHT];
 } Board;
 
 //function sigs
-void print_board();
+void print_board(Board board);
 Board generate_mines();
 int rand_n(int n);
 
