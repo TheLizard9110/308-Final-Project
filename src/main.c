@@ -16,6 +16,8 @@
 int cols;
 int rows;
 int mines;
+int highlightX = 1;
+int highlightY = 1;
 
 //#ifndef TEST
 int main(int argc, const char * argv[]) {
@@ -27,7 +29,7 @@ int main(int argc, const char * argv[]) {
 	//WINDOW *bWin = NULL;
 	while(legalSize == 0){
 		printf("%s\n","Choose your board size, (S)mall, (M)edium, or (L)arge");
-		size[0] = fgetc(stdin);
+		scanf("%s", size);
 		//fgetc works but not optimally, maybe change later
 
 		//check for small
@@ -67,16 +69,42 @@ int main(int argc, const char * argv[]) {
 
 	rows = boardSize;
 	cols = boardSize;
-
+	Board info = generate_mines();
+        printf("%d", info.board[3][3]);
+	initscr();
+        noecho();
+        curs_set(FALSE);
+        cbreak();
+        printw("Minesweeper");
+        print_board();
+        //printf("%s\n","im just looking for a better way to get up out of bed instead of getting on th$
+        int input;
+        while(1){
+                input = getch();
+                switch(input){
+                        case 'w':
+                                if (highlightX > 1) highlightX--;
+                                break;
+                        case 's':
+                                if (highlightX < rows) highlightX++;
+                                break;
+                        case 'a':
+                                if (highlightY > 1) highlightY--;
+                                break;
+                        case 'd':
+                                if (highlightY < cols) highlightY++;
+                                break;
+                        default:
+                                break;
+                }
+                print_board();
+                if (input == 'X' || input == 'x') break;
+        }
 
 	//bWin = newwin(rows + 2, 3 * cols + 2, 3, 8);
 	//wborder(bWin, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_ULCORNER, ACS_URCORNER, ACS_LLCORNER, ACS_LRCORNER);
 		
-	Board info = generate_mines();
-	printf("%d", info.board[3][3]);
-	//printf("%s\n","im just looking for a better way to get up out of bed instead of getting on the internet and checking out who hit me up fam");
-
-	
+	endwin();
 	return 0;
 }
 
@@ -89,14 +117,17 @@ void print_board() {
 	Board minesBoard;
 	minesBoard.width = cols;
 	minesBoard.height = rows;
-        initscr();
-        noecho();
-        curs_set(FALSE);
-	printw("Minesweeper");
         for(i = 1; i <= rows; i++){
                 for(j = 1; j <= cols; j++) {
-                        mvprintw(y, x, "X");
-                        refresh();
+                        if (highlightX == j && highlightY == i){
+				attron(A_REVERSE);
+				mvprintw(y, x, "X");
+				attroff(A_REVERSE);
+			}
+			else{
+				mvprintw(y, x, "X");
+                        }
+			//refresh();
                         y += 2;
                 }
 		y = 2;
@@ -105,8 +136,6 @@ void print_board() {
 
 
 	refresh();
-	getch();
-	endwin();
 }
 
 Board generate_mines(){
