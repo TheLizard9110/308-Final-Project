@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <panel.h>
+#include <time.h>
 
 int cols;
 int rows;
@@ -22,8 +23,12 @@ int highlightY = 1;
 //#ifndef TEST
 int main(int argc, const char * argv[]) {
 	
-	if(argc > 1) return 0;
+	if(argc > 1){
+		printf("%s\n", "No arguments required");
+		return 0;
+	}
 	char size[1];
+	srand(time(NULL));
 	int boardSize = 0;
 	int legalSize = 0;
 	//WINDOW *bWin = NULL;
@@ -58,7 +63,7 @@ int main(int argc, const char * argv[]) {
 		
 		//check respects
 		else if(legalSize == 0 && (0 == strcmp(size,"f") || 0 == strcmp(size, "F"))){
-			printf("%s\n", "respects paid, thank you for your service");
+			printf("%s\n", "respects paid, thanks for the royalties");
 		}
 
 		//else
@@ -72,9 +77,10 @@ int main(int argc, const char * argv[]) {
 	Board covered;
 	covered.width = cols;
 	covered.height = rows;
+
 	int i, j;
-        for(i = 0; i < rows; i++){
-                for(j = 0; j < cols; j++){
+	for(i = 0; i < rows; i++){
+        	for(j = 0; j < cols; j++){
                         covered.cboard[i][j] = "X";
                 }
         }
@@ -87,7 +93,9 @@ int main(int argc, const char * argv[]) {
         print_board(covered);
         //printf("%s\n","im just looking for a better way to get up out of bed instead of getting on th$
         int input;
+	int winCount = 0;
         char buf[16];
+	int loseBool = 0;
 	int infoTemp;
         while(1){
                 input = getch();
@@ -105,11 +113,19 @@ int main(int argc, const char * argv[]) {
                                 if (highlightY < cols) highlightY++;
                                 break;
 			case ' ':
+				if(covered.cboard[highlightY-1][highlightX-1] == "X")
+					winCount++;
 				infoTemp = info.board[highlightY-1][highlightX-1];
-				if(infoTemp == 9){//if bomb
-					covered.cboard[highlightY-1][highlightX-1] = "*";
+				if(infoTemp == 9){
+					//TODO loss condition
+					covered.cboard[highlightY-1][highlightX-1] = "*"; //bomb
+					winCount = (rows * cols - mines);
+					loseBool = 1; 
 				}
-				else if(infoTemp == 0) covered.cboard[highlightY-1][highlightX-1] = "0";
+				else if(infoTemp == 0){
+					//TODO method or function to clear out open areas	
+					covered.cboard[highlightY-1][highlightX-1] = "0";
+				}
 				else if(infoTemp == 1) covered.cboard[highlightY-1][highlightX-1] = "1";
 				else if(infoTemp == 2) covered.cboard[highlightY-1][highlightX-1] = "2";
 				else if(infoTemp == 3) covered.cboard[highlightY-1][highlightX-1] = "3";
@@ -123,6 +139,18 @@ int main(int argc, const char * argv[]) {
 					//sprintf(buf, "%d", infoTemp);				
 					//covered.cboard[highlightY-1][highlightX-1] = buf;
 				}
+				
+				if(winCount >= (rows * cols - mines)){
+					for(i = 0; i < rows; i++){//clears the board
+				                for(j = 0; j < cols; j++){
+                 				       covered.cboard[i][j] = " ";
+                				}
+        				}
+					if(loseBool == 1) mvprintw(5, 5, "You hit a mine! Try again?");
+					else (mvprintw(5, 5, "You Win!"));
+					//TODO insert a play again prompt and excecution 
+				}
+				
 				break;
 			case 'm':
 			case 'M':
@@ -212,10 +240,11 @@ Board generate_mines(){
 	//insert mines randomly
 	int a, b, c, d, x, y;
 	
-	for(i = 1; i <= mines; i++){
+	for(i = 0; i < mines; i++){
 		a = rand_n(rows);
 		b = rand_n(cols);
-		//a, b = 1;
+		//a = rand() % rows + 1;
+		//b = rand() % cols + 1;
 		if(gb[a][b] == 9) i--;
 		else gb[a][b] = 9;
 	}
