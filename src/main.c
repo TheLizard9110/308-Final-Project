@@ -180,7 +180,7 @@ Board generate_mines(){
 	//insert mines randomly
 	int a, b, c, d, x, y;
 	
-	for(i = 0; i < mines; i++){
+	for(i = 0; i < mines + 1; i++){
 		a = RANDOM(rows);
 		b = RANDOM(cols);
 		if(gb[a][b] == 9) i--;
@@ -229,7 +229,7 @@ void reveal_cell(Board * covered, Board info, int x, int y){
 		}
 	}
 	else if (infoTemp == 0){
-		covered->cboard[y][x] = "0";
+		covered->cboard[y][x] = " ";
 		for (int i = x-1; i <= x+1; i++){
 			for (int j = y-1; j <= y+1; j++){
 				if (i < rows && i >= 0 && j < cols && j >= 0 && (covered->cboard[j][i] == "X" || covered->cboard[j][i] == "M")){
@@ -259,8 +259,8 @@ void check_win(Board * covered, Board info){
 				reveal_cell(covered, info, i, j);
 			}
 		}
-		if (loseBool) mvprintw(5, 5, "You hit a mine! Try again?"); //take a L
-		else mvprintw(5, 5, "You Win!"); //get that W
+		if (loseBool) mvprintw(5, 32, "You hit a mine! Try again?"); //take an L
+		else mvprintw(5, 32, "You Win!"); //get that W
 	}
 }
 
