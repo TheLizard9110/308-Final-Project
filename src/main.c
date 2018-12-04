@@ -104,7 +104,9 @@ int main(int argc, const char * argv[]) {
 			case 'n':
 				loseBool = False;
 				winCount = 0;
-				info = generate_mines();        			
+				highlightX = 1;
+				highlightY = 1;
+				info = generate_mines();
         			covered.width = cols;
         			covered.height = rows;
 				mvprintw(5, 34, "                                        "); //clears the win/loss message
@@ -209,9 +211,10 @@ void print_board(Board board) {
                 x++;
         }
 
-
-
-
+	i = 0;
+	j = 0;
+	x = 0;
+	y = 0;
 
 	refresh();
 }
@@ -231,6 +234,12 @@ Board generate_mines(){
 	for(i = 0; i < mines + 1; i++){
 		a = RANDOM(rows);
 		b = RANDOM(cols);
+		while (a < 0 || a >= rows){ //prevent mines being generated outside the board
+			a = RANDOM(rows);
+		}
+		while (b < 0 || b >= cols){
+			b = RANDOM(cols);
+		}
 		if(gb[a][b] == 9) i--;
 		else gb[a][b] = 9;
 	}
@@ -258,7 +267,8 @@ Board generate_mines(){
 	for(i = 0; i < rows; i++)
 		for(j = 0; j < cols; j++)
 			info.board[i][j] = gb[i][j];
-
+	i = 0;
+	j = 0;
 	return info;
 
 }

@@ -15,8 +15,6 @@
 #include <time.h>
 #define MAX_WIDTH 15
 #define MAX_HEIGHT 15
-//#define FALSE 0
-//#define TRUE 1
 #define RANDOM(n) (rand() % n + 1)
 
 typedef enum Bool { False, True } Bool;
