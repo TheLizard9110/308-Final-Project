@@ -1,5 +1,5 @@
 //
-//  main.c 
+//  main.c
 //  Final Project
 //  Copyright (c) 2018 NoUMedia
 //  hit f to pay royalties pl0x
@@ -19,8 +19,10 @@ int rows;
 int mines;
 int highlightX = 1;
 int highlightY = 1;
+int winCount;
+Bool loseBool;
 
-//#ifndef TEST
+//we tried real heccin hard to make this good
 int main(int argc, const char * argv[]) {
 	
 	if(argc > 1){
@@ -31,11 +33,9 @@ int main(int argc, const char * argv[]) {
 	srand(time(NULL));
 	int boardSize = 0;
 	int legalSize = 0;
-	//WINDOW *bWin = NULL;
 	while(legalSize == 0){
 		printf("%s\n","Choose your board size, (S)mall, (M)edium, or (L)arge");
 		scanf("%s", size);
-		//fgetc works but not optimally, maybe change later
 
 		//check for small
 		if(0 == strcmp(size, "s") || 0 == strcmp(size, "S")){
@@ -68,7 +68,7 @@ int main(int argc, const char * argv[]) {
 
 		//else
 		else{
-			printf("%s\n", "That isn't a size, maybe try a differnet one.");
+			printf("%s\n", "That isn't a size, maybe try a different one.");
 		}
 	}//end while
 	rows = boardSize;
@@ -87,15 +87,15 @@ int main(int argc, const char * argv[]) {
 
 	initscr();
         noecho();
-        curs_set(FALSE);
+        curs_set(0);
         cbreak();
-        printw("Minesweeper");
+        printw("Minesweeper: Press SPACE to reveal a cell and 'M' to flag a cell. Press 'X' to exit.");
         print_board(covered);
-        //printf("%s\n","im just looking for a better way to get up out of bed instead of getting on th$
+        //printf("%s\n","im just looking for a better way to get up out of bed instead of getting on the internet and checking out who's hit me up fam");
         int input;
-	int winCount = 0;
+	winCount = 0;
         char buf[16];
-	int loseBool = 0;
+	loseBool = False;
 	int infoTemp;
         while(1){
                 input = getch();
@@ -113,43 +113,8 @@ int main(int argc, const char * argv[]) {
                                 if (highlightY < cols) highlightY++;
                                 break;
 			case ' ':
-				if(covered.cboard[highlightY-1][highlightX-1] == "X")
-					winCount++;
-				infoTemp = info.board[highlightY-1][highlightX-1];
-				if(infoTemp == 9){
-					covered.cboard[highlightY-1][highlightX-1] = "*"; //bomb
-					winCount = (rows * cols - mines); // triggers board clear
-					loseBool = 1; //triggers loss message
-				}
-				else if(infoTemp == 0){
-					//TODO method or function to clear out open areas	
-					covered.cboard[highlightY-1][highlightX-1] = "0";
-				}
-				else if(infoTemp == 1) covered.cboard[highlightY-1][highlightX-1] = "1";
-				else if(infoTemp == 2) covered.cboard[highlightY-1][highlightX-1] = "2";
-				else if(infoTemp == 3) covered.cboard[highlightY-1][highlightX-1] = "3";
-				else if(infoTemp == 4) covered.cboard[highlightY-1][highlightX-1] = "4";
-				else if(infoTemp == 5) covered.cboard[highlightY-1][highlightX-1] = "5";
-				else if(infoTemp == 6) covered.cboard[highlightY-1][highlightX-1] = "6";
-				else if(infoTemp == 7) covered.cboard[highlightY-1][highlightX-1] = "7";
-				else if(infoTemp == 8) covered.cboard[highlightY-1][highlightX-1] = "8";
-				else{
-					covered.cboard[highlightY-1][highlightX-1] = "?";
-					//sprintf(buf, "%d", infoTemp);				
-					//covered.cboard[highlightY-1][highlightX-1] = buf;
-				}
-				
-				if(winCount >= (rows * cols - mines)){
-					for(i = 0; i < rows; i++){//clears the board
-				                for(j = 0; j < cols; j++){
-                 				       covered.cboard[i][j] = " ";
-                				}
-        				}
-					if(loseBool == 1) mvprintw(5, 5, "You hit a mine! Try again?");
-					else (mvprintw(5, 5, "You Win!"));
-					//TODO insert a play again prompt and excecution 
-				}
-				
+				reveal_cell(&covered, info, highlightX-1, highlightY-1);
+				check_win(&covered, info);
 				break;
 			case 'm':
 			case 'M':
@@ -167,9 +132,7 @@ int main(int argc, const char * argv[]) {
                 if (input == 'X' || input == 'x') break;
         }
 
-	//bWin = newwin(rows + 2, 3 * cols + 2, 3, 8);
-	//wborder(bWin, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_ULCORNER, ACS_URCORNER, ACS_LLCORNER, ACS_LRCORNER);
-		
+
 	endwin();
 	return 0;
 }
@@ -180,33 +143,13 @@ void print_board(Board board) {
         int j;
         int x = 0;
         int y = 2;
-        /*
-	for(i = 1; i <= rows; i++){
-                for(j = 1; j <= cols; j++) {
-                        if (highlightX == j && highlightY == i){
-				attron(A_REVERSE);
-				mvprintw(y, x, "X");
-				attroff(A_REVERSE);
-			}
-			else{
-				mvprintw(y, x, "X");
-                        }
-                        y += 2;
-                }
-		y = 2;
-                x += 2;
-		}*/
-        //const char* p;
-        //char buf[16];
 
         for(i = 1; i <= rows; i++){
                 for(j = 1; j <= cols; j++){
-                        //sprintf(buf, "%d", board.cboard[i-1][j-1]);
-                        //p = buf;
 			const char * q = board.cboard[i-1][j-1];
                         if (highlightX == j && highlightY == i){
 				attron(A_REVERSE);
-				mvprintw(y, x, q);
+				mvprintw(y, x, q); //highlight the selected cell
 				attroff(A_REVERSE);
 			}
 			else{
@@ -234,16 +177,12 @@ Board generate_mines(){
 			gb[i][j] = 0;
 		}
 	}
-	//printf("%d\n", gb[0][0]);
-	//printf("%d\n", gb[4][4]);
 	//insert mines randomly
 	int a, b, c, d, x, y;
 	
 	for(i = 0; i < mines; i++){
-		a = rand_n(rows);
-		b = rand_n(cols);
-		//a = rand() % rows + 1;
-		//b = rand() % cols + 1;
+		a = RANDOM(rows);
+		b = RANDOM(cols);
 		if(gb[a][b] == 9) i--;
 		else gb[a][b] = 9;
 	}
@@ -260,35 +199,11 @@ Board generate_mines(){
 			if(gb[a][b] != 9){
 				for(c = a - 1; c <= a + 1; c++)
 					for(d = b - 1; d <= b + 1; d++)
-						if (c < rows && d < cols && c >= 0 && d >= 0){
+						if (c < rows && d < cols && c >= 0 && d >= 0){ //dont seg fault pls
 							if(gb[c][d] == 9)
 								gb[a][b]++;
 						}
 			}
-
-
-	//test population of the board
-	/*
-	x=0;
-	y=2;
-	const char* p;
-	char buf[16];
-
-	initscr();
-	for(i = 1; i <= rows; i++){
-		for(j = 1; j <= cols; j++){
-			sprintf(buf, "%d", gb[i-1][j-1]);
-			p = buf;
-			mvprintw(y, x, p);
-			refresh();
-			y += 2;
-		}
-		y = 2;
-		x += 2;
-	}
-	getch();
-	endwin();
-	*/
 
 
 
@@ -300,7 +215,65 @@ Board generate_mines(){
 
 }
 
-int rand_n(int n) {
-	return rand() % n + 1;
+void reveal_cell(Board * covered, Board info, int x, int y){
+	int infoTemp;
+	if (covered->cboard[y][x] == "X" || covered->cboard[y][x] == "M")
+		winCount++;
+	infoTemp = info.board[y][x];
+	if (infoTemp == 9){ //check if it's a mine
+		covered->cboard[y][x] = "*";
+		int numX = count_x(covered);
+		if (numX > mines){
+			winCount = (rows * cols - mines);
+			loseBool = True;
+		}
+	}
+	else if (infoTemp == 0){
+		covered->cboard[y][x] = "0";
+		for (int i = x-1; i <= x+1; i++){
+			for (int j = y-1; j <= y+1; j++){
+				if (i < rows && i >= 0 && j < cols && j >= 0 && (covered->cboard[j][i] == "X" || covered->cboard[j][i] == "M")){
+					reveal_cell(covered, info, i, j); //recursively reveal cells surrounding the 0 cell
+				}
+			}
+		}
+	}
+	else if (infoTemp == 1) covered->cboard[y][x] = "1";
+	else if (infoTemp == 2) covered->cboard[y][x] = "2";
+	else if (infoTemp == 3) covered->cboard[y][x] = "3";
+	else if (infoTemp == 4) covered->cboard[y][x] = "4";
+	else if (infoTemp == 5) covered->cboard[y][x] = "5";
+	else if (infoTemp == 6) covered->cboard[y][x] = "6";
+	else if (infoTemp == 7) covered->cboard[y][x] = "7";
+	else if (infoTemp == 8) covered->cboard[y][x] = "8";
+	else{
+		covered->cboard[y][x] = "?"; //if we hit this case we dun goofed real bad
+	}
+
 }
+
+void check_win(Board * covered, Board info){
+	if (winCount >= (rows * cols - mines)){
+		for (int i = 0; i < rows; i++){
+			for (int j = 0; j < cols; j++){
+				reveal_cell(covered, info, i, j);
+			}
+		}
+		if (loseBool) mvprintw(5, 5, "You hit a mine! Try again?"); //take a L
+		else mvprintw(5, 5, "You Win!"); //get that W
+	}
+}
+
+int count_x(Board * board){
+	int count = 0;
+	for (int i = 0; i < rows; i++){
+		for (int j = 0; j < cols; j++){
+			if (board->cboard[i][j] == "X" || board->cboard[i][j] == "M"){
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
 
