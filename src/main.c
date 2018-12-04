@@ -141,9 +141,26 @@ int main(int argc, const char * argv[]) {
 void print_board(Board board) {
 	int i;
         int j;
-        int x = 0;
+        int x = 2;
         int y = 2;
-
+	
+	//top border
+	for(i = 0; i < cols * 2 - 1; i++){
+		mvprintw(x, y, "_");
+		y++;
+	}
+	
+	//left border
+	x = 3;
+	y = 1;
+	for(j = 0; j < rows * 2 + 1; j++){
+		mvprintw(x, y, "|");
+		x++;
+	}
+	
+	//print board
+	x = 2;
+	y = 4;
         for(i = 1; i <= rows; i++){
                 for(j = 1; j <= cols; j++){
 			const char * q = board.cboard[i-1][j-1];
@@ -158,9 +175,26 @@ void print_board(Board board) {
                         refresh();
                         y += 2;
                 }
-                y = 2;
+                y = 4;
                 x += 2;
         }
+	
+	//bottom border
+	y = 2;
+	x+=1;
+	for(i = 0; i < cols * 2; i++){
+                mvprintw(x, y, "_");
+                y++;
+        }
+
+	//right border
+	x = 3;
+        y-=1;
+        for(j = 0; j < rows * 2 + 1; j++){
+                mvprintw(x, y, "|");
+                x++;
+        }
+
 
 
 
