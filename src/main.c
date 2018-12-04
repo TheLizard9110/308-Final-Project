@@ -30,7 +30,7 @@ int main(int argc, const char * argv[]) {
 		return 0;
 	}
 	char size[1];
-	srand(time(NULL));
+	srand(time(0)); //seeding the random
 	int boardSize = 0;
 	int legalSize = 0;
 	while(legalSize == 0){
@@ -89,8 +89,9 @@ int main(int argc, const char * argv[]) {
         noecho();
         curs_set(0);
         cbreak();
-        printw("Minesweeper: Press SPACE to reveal a cell and 'M' to flag a cell. Press 'X' to exit.");
+        printw("Minesweeper: Press SPACE to reveal a cell and 'M' to flag a cell. Press 'N' to start a new game, or Press 'X' to exit.");
         print_board(covered);
+
         //printf("%s\n","im just looking for a better way to get up out of bed instead of getting on the internet and checking out who's hit me up fam");
         int input;
 	winCount = 0;
@@ -100,6 +101,19 @@ int main(int argc, const char * argv[]) {
         while(1){
                 input = getch();
                 switch(input){
+			case 'n':
+				loseBool = False;
+				winCount = 0;
+				info = generate_mines();        			
+        			covered.width = cols;
+        			covered.height = rows;
+				mvprintw(5, 34, "                                        "); //clears the win/loss message
+        			for(i = 0; i < rows; i++){
+               		 		for(j = 0; j < cols; j++){
+                        			covered.cboard[i][j] = "X";
+                			}
+        			}
+				print_board(covered);
                         case 'w':
                                 if (highlightX > 1) highlightX--;
                                 break;
@@ -293,8 +307,8 @@ void check_win(Board * covered, Board info){
 				reveal_cell(covered, info, i, j);
 			}
 		}
-		if (loseBool) mvprintw(5, 32, "You hit a mine! Try again?"); //take an L
-		else mvprintw(5, 32, "You Win!"); //get that W
+		if (loseBool) mvprintw(5, 34, "You hit a mine! Hit 'N' to try again."); //take an L
+		else mvprintw(5, 34, "You Win! Hit 'N' to play again!"); //get that W
 	}
 }
 
