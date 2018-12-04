@@ -3,7 +3,7 @@
 // Final Project
 //
 // Copyright (c) 2018 NoUMedia
-// yeet
+// Trent Gierhart and Charles Tryban
 
 #ifndef types_h
 #define types_h

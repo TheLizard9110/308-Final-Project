@@ -3,6 +3,7 @@
 //  Final Project
 //  Copyright (c) 2018 NoUMedia
 //  hit f to pay royalties pl0x
+//  Trent Gierhart and Charles Tryban
 
 //gcc main.c -o game -lncurses
 
@@ -101,6 +102,7 @@ int main(int argc, const char * argv[]) {
         while(1){
                 input = getch();
                 switch(input){
+			case 'N':
 			case 'n':
 				loseBool = False;
 				winCount = 0;
@@ -116,15 +118,19 @@ int main(int argc, const char * argv[]) {
                 			}
         			}
 				print_board(covered);
+			case 'W':
                         case 'w':
                                 if (highlightX > 1) highlightX--;
                                 break;
+			case 'S':
                         case 's':
                                 if (highlightX < rows) highlightX++;
                                 break;
+			case 'A':
                         case 'a':
                                 if (highlightY > 1) highlightY--;
                                 break;
+			case 'D':
                         case 'd':
                                 if (highlightY < cols) highlightY++;
                                 break;
@@ -231,7 +237,7 @@ Board generate_mines(){
 	//insert mines randomly
 	int a, b, c, d, x, y;
 	
-	for(i = 0; i < mines + 1; i++){
+	for(i = 0; i < mines; i++){
 		a = RANDOM(rows);
 		b = RANDOM(cols);
 		while (a < 0 || a >= rows){ //prevent mines being generated outside the board
